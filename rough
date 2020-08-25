@@ -1,0 +1,31 @@
+function authorize (req , res , next){
+    try{
+    if(req.headers.auth !== undefined){
+        let jwtmessage = jwt.verify(req.headers.auth , process.env.JWT)
+        res.locals.user = jwtmessage.user
+        next()
+    }else{
+        res.status(404).json({ message: "authorization failed" });
+    }
+}
+catch(err){
+    console.log(err)
+    res.status(404).json({ message: "authorization failed" });
+}
+}
+
+app.get('/dashboard' ,[authorize] ,async (req,res) => {
+    var user = req.body;
+    try {
+        
+        const client = await mongodb.connect(process.env.DB);
+        const db = client.db("crm");
+       
+        console.log("authorisation")
+
+
+        res.json({message : 'success' })
+    } catch (err) {
+        
+    }
+})
